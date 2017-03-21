@@ -64,6 +64,7 @@ console.write('no\r\n')
 print("waiting for Router>")
 startup_text = ''
 while 'Router>' not in startup_text:
+    console.write('\r\n')
     startup_text += console.read(console.isWaiting())
 print(startup_text)
 
