@@ -24,26 +24,63 @@ while 'program load complete,' not in startup_text:
     startup_text += console.read(console.inWaiting())
 
 #send break command
-console.send_break()
-#make sure we enter rommon and set config register
-if 'rommon' in console.read(console.inWaitin()):
-    console.write('confreg 0x2142\r\n')
-    console.write('reset\r\n')
+while 'rommon' not in startup_text:
+    console.send_break()
+    startup_text += console.read(console.inWaiting())
+    print(startup_text)
 
+#make sure we enter rommon and set config register
+if 'rommon' in startup_text:
+    print("entered rommon")
+    console.write('confreg 0x2142\r\n')
+    print("confreg 0x2142")
+    console.write('reset\r\n')
+    print("reset")
+
+print("closing connection in case default baudrate was not used")
+console.close()
+console = serial.Serial(
+        port='COM1', #windows
+        #port='/dev/ttyUSB0' #what I expect it to be on Linux, dmesg when you plug in to find out
+        baudrate=9600, #default baudrate
+        parity='N', #default parity
+        stopbits=1, #default stopbits
+        bytesize=8, #default bytesize
+        timeout=8
+)
+print("console opened")
+print(console.isOpen())
+
+print("entering boot read loop")
 #watch for the initialization prompt
 startup_text = ''
 while '[yes/no]:' not in startup_text:
     startup_text += console.read(console.inWaiting())
 
+print("Removing the current configuration")
 #reset the device
 console.write('no\r\n')
+
+print("waiting for Router>")
+startup_text = ''
+while 'Router>' not in startup_text:
+    startup_text += console.read(console.isWaiting())
+print(startup_text)
+
 console.write('enable\r\n')
 console.write('delete nvram:/startup-config\r\n')
+console.write('\r\n')
+console.write('\r\n')
+console.write('write erase\r\n')
+console.write('\r\n')
+console.write('\r\n')
+print(console.read(console.inWaiting()))
 console.write('configure terminal\r\n')
 console.write('config-register 0x2102\r\n')
 console.write('exit\r\n')
-console.write('reboot\r\n')
+console.write('reload\r\n')
 console.write('no\r\n')
+print("completed")
 #console.write('...\r\n') #\r\n is windows syntax? need to write a break
 
 
