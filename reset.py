@@ -5,6 +5,10 @@
 # should reset a ciscos password and configuration if plugged into a 2911
 # router when it is rebooting
 import serial
+import subprocess
+import shlex
+
+#baudrate = get_baudrate('COM1') # linux
 
 console = serial.Serial(
         port='COM1', #windows
@@ -84,4 +88,8 @@ console.write('no\r\n')
 print("completed")
 #console.write('...\r\n') #\r\n is windows syntax? need to write a break
 
-
+def get_baudrate(device):
+    command = 'stty < {0}'.format(device)
+    proc_retval = subprocess.check_output(shlex.split(command))
+    baudrate = int(proc_retval.split()[1])
+    return baudrate
