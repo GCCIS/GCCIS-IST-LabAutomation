@@ -11,8 +11,8 @@ import shlex
 #baudrate = get_baudrate('COM1') # linux
 
 console = serial.Serial(
-        #port='COM1', #windows
-        port='/dev/ttyUSB0', #what I expect it to be on Linux, dmesg when you plug in to find out
+        port='COM1', #windows
+        #port='/dev/ttyUSB0', #what I expect it to be on Linux, dmesg when you plug in to find out
         baudrate=9600, #default baudrate
         parity='N', #default parity
         stopbits=1, #default stopbits
@@ -41,11 +41,12 @@ if 'rommon' in startup_text:
     console.write('reset\r\n')
     print("reset")
 
+#TODO Should be able to change this to a one line so that port does not need to be reused
 print("closing connection in case default baudrate was not used")
 console.close()
 console = serial.Serial(
-        #port='COM1', #windows
-        port='/dev/ttyUSB0', #what I expect it to be on Linux, dmesg when you plug in to find out
+        port='COM1', #windows
+        #port='/dev/ttyUSB0', #what I expect it to be on Linux, dmesg when you plug in to find out
         baudrate=9600, #default baudrate
         parity='N', #default parity
         stopbits=1, #default stopbits
