@@ -4,6 +4,7 @@
 
 # should reset a ciscos password and configuration if plugged into a 2911
 # router when it is rebooting
+# EDIT THE TWO port= LINES IF YOUR COM PORT IS DIFFERENT
 import serial
 import subprocess
 import shlex
